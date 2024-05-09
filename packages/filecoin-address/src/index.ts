@@ -406,7 +406,7 @@ export function ethAddressFromDelegated(delegated: string): EthAddress {
  */
 
 export function isEthAddress(address: string): address is EthAddress {
-  return ethers.isAddress(address)
+  return ethers.isAddress(address) && Number(address) !== 0
 }
 
 /**
