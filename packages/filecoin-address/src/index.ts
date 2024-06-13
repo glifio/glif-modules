@@ -385,7 +385,7 @@ export function idFromPayload(payload: Uint8Array): number {
 
 export function delegatedFromEthAddress(
   ethAddr: EthAddress,
-  coinType: CoinType = CoinType.TEST
+  coinType: CoinType = defaultCoinType
 ): string {
   if (isEthIdMaskAddress(ethAddr))
     throw new Error('Cannot convert ID mask address to delegated')
@@ -425,7 +425,7 @@ export function isEthIdMaskAddress(ethAddr: EthAddress): boolean {
 
 export function idFromEthAddress(
   ethAddr: EthAddress,
-  coinType: CoinType = CoinType.TEST
+  coinType: CoinType = defaultCoinType
 ): string {
   if (!isEthIdMaskAddress(ethAddr))
     throw new Error('Cannot convert non-ID mask address to id')
