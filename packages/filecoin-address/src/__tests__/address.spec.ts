@@ -347,7 +347,7 @@ describe('address', () => {
     const t3 =
       't3vvmn62lofvhjd2ugzca6sof2j2ubwok6cj4xxbfzz4yuxfkgobpihhd2thlanmsh3w2ptld2gqkn2jvlss4a'
     const t410f = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pt4zamxa'
-    const t411f = 't411fkkld55ioe7qg24wvt7fu6pbknb56ht7pt4zamxa'
+    const t411f = 't411fkkld55ioe7qg24wvt7fu6pbknb56ht7poxmy4mq'
 
     test('decode f4 addresses', () => {
       expect(decode(t410f).toString()).toBe(t410f)
