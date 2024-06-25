@@ -397,8 +397,12 @@ export function delegatedFromEthAddress(
  */
 
 export function ethAddressFromDelegated(delegated: string): EthAddress {
-  const ethAddress = `0x${decode(delegated).subAddrHex}`
-  return ethers.getAddress(ethAddress) as EthAddress // Adds checksum
+  const { namespace, subAddrHex } = decode(delegated)
+  if (namespace !== DelegatedNamespace.EVM)
+    throw new Error(
+      `Expected namespace ${DelegatedNamespace.EVM}, found ${namespace}`
+    )
+  return ethers.getAddress(`0x${subAddrHex}`) as EthAddress // Adds checksum
 }
 
 /**
