@@ -20,7 +20,10 @@ import {
   idFromAddress,
   delegatedFromEthAddress,
   ethAddressFromDelegated,
-  ethAddressFromID
+  ethAddressFromID,
+  idFromEthAddress,
+  isEthIdMaskAddress,
+  isEthAddress
 } from '../index'
 
 describe('address', () => {
@@ -331,38 +334,92 @@ describe('address', () => {
     })
   })
 
-  const hex = '0x52963EF50e27e06D72D59fcB4F3c2a687BE3cfEf'
-  const del = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pt4zamxa'
+  describe('FEVM', () => {
+    const eth = '0x52963EF50e27e06D72D59fcB4F3c2a687BE3cfEf'
+    const ethId01 = '0xff00000000000000000000000000000000000001'
+    const ethId0100 = '0xff00000000000000000000000000000000000064'
+    const ethId05088 = '0xff000000000000000000000000000000000013e0'
+    const ethInvalid = '0x8Ba1f109551bD432803012645Ac136ddd64DBa72'
+    const ethIcap = 'XE65GB6LDNXYOFTX0NSV3FUWKOWIXAMJK36'
+    const t01 = 't01'
+    const t0100 = 't0100'
+    const t05088 = 't05088'
+    const t1 = 't16xlkjp3dcfrsb257duoqfgj7glo2uvvgxyy4gmy'
+    const t2 = 't2e467euxin5y6vsmiw4ts3l4cme4zio4cvfx5b5a'
+    const t3 =
+      't3vvmn62lofvhjd2ugzca6sof2j2ubwok6cj4xxbfzz4yuxfkgobpihhd2thlanmsh3w2ptld2gqkn2jvlss4a'
+    const t410f = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pt4zamxa'
+    const t410fIdMask = 't410f74aaaaaaaaaaaaaaaaaaaaaaaaaaaaabvo5mkdi'
+    const t410fShort = 't410fkkld55ioe7qg24wvt7fu6pbkndgcenb6'
+    const t410fLong = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pebagbaf3x4ox2'
+    const t411f = 't411fkkld55ioe7qg24wvt7fu6pbknb56ht7poxmy4mq'
 
-  describe('decode f4 addresses', () => {
-    expect(decode(del).toString()).toBe(del)
-  })
+    test('decode f4 addresses', () => {
+      expect(decode(t410f).toString()).toBe(t410f)
+    })
 
-  describe('delegatedFromEthAddress', () => {
-    expect(delegatedFromEthAddress(hex, CoinType.TEST)).toBe(del)
-  })
+    test('delegatedFromEthAddress', () => {
+      expect(delegatedFromEthAddress(eth, CoinType.TEST)).toBe(t410f)
+      expect(() => delegatedFromEthAddress(ethId01, CoinType.TEST)).toThrow()
+    })
 
-  describe('ethAddressFromDelegated', () => {
-    expect(ethAddressFromDelegated(del)).toBe(hex)
-  })
+    test('ethAddressFromDelegated', () => {
+      expect(() => ethAddressFromDelegated(eth)).toThrow()
+      expect(() => ethAddressFromDelegated(t01)).toThrow()
+      expect(() => ethAddressFromDelegated(t1)).toThrow()
+      expect(() => ethAddressFromDelegated(t2)).toThrow()
+      expect(() => ethAddressFromDelegated(t3)).toThrow()
+      expect(ethAddressFromDelegated(t410f)).toBe(eth)
+      expect(() => ethAddressFromDelegated(t410fIdMask)).toThrow()
+      expect(() => ethAddressFromDelegated(t410fShort)).toThrow()
+      expect(() => ethAddressFromDelegated(t410fLong)).toThrow()
+      expect(() => ethAddressFromDelegated(t411f)).toThrow()
+    })
 
-  describe('ethAddressFromID', () => {
-    expect(ethAddressFromID('t01')).toBe(
-      '0xff00000000000000000000000000000000000001'
-    )
-    expect(ethAddressFromID('t0100')).toBe(
-      '0xff00000000000000000000000000000000000064'
-    )
-    expect(ethAddressFromID('t05088')).toBe(
-      '0xff000000000000000000000000000000000013e0'
-    )
-  })
+    test('isEthAddress', () => {
+      expect(isEthAddress(eth)).toBe(true)
+      expect(isEthAddress(ethId01)).toBe(true)
+      expect(isEthAddress(ethId0100)).toBe(true)
+      expect(isEthAddress(ethId05088)).toBe(true)
+      expect(isEthAddress(ethInvalid)).toBe(false)
+      expect(isEthAddress(ethIcap)).toBe(false)
+      expect(isEthAddress(t01)).toBe(false)
+      expect(isEthAddress(t1)).toBe(false)
+      expect(isEthAddress(t2)).toBe(false)
+      expect(isEthAddress(t3)).toBe(false)
+      expect(isEthAddress(t410f)).toBe(false)
+    })
 
-  test('it should validate correct filecoin addresses', () => {
-    expect(validateAddressString(del)).toBe(true)
-  })
+    test('isEthIdMaskAddress', () => {
+      expect(isEthIdMaskAddress(eth)).toBe(false)
+      expect(isEthIdMaskAddress(ethId01)).toBe(true)
+      expect(isEthIdMaskAddress(ethId0100)).toBe(true)
+      expect(isEthIdMaskAddress(ethId05088)).toBe(true)
+    })
 
-  test('it should invalidate incorrect filecoin addresses', () => {
-    expect(validateAddressString(del.slice(0, -1))).toBe(false)
+    test('idFromEthAddress', () => {
+      expect(() => idFromEthAddress(eth, CoinType.TEST)).toThrow()
+      expect(idFromEthAddress(ethId01, CoinType.TEST)).toBe(t01)
+      expect(idFromEthAddress(ethId0100, CoinType.TEST)).toBe(t0100)
+      expect(idFromEthAddress(ethId05088, CoinType.TEST)).toBe(t05088)
+    })
+
+    test('ethAddressFromID', () => {
+      expect(ethAddressFromID(t01)).toBe(ethId01)
+      expect(ethAddressFromID(t0100)).toBe(ethId0100)
+      expect(ethAddressFromID(t05088)).toBe(ethId05088)
+      expect(() => ethAddressFromID(t1)).toThrow()
+      expect(() => ethAddressFromID(t2)).toThrow()
+      expect(() => ethAddressFromID(t3)).toThrow()
+      expect(() => ethAddressFromID(t410f)).toThrow()
+    })
+
+    test('it should validate correct filecoin addresses', () => {
+      expect(validateAddressString(t410f)).toBe(true)
+    })
+
+    test('it should invalidate incorrect filecoin addresses', () => {
+      expect(validateAddressString(t410f.slice(0, -1))).toBe(false)
+    })
   })
 })

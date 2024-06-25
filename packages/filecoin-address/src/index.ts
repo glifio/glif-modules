@@ -221,7 +221,9 @@ export function newDelegatedEthAddress(
   ethAddr: EthAddress,
   coinType?: CoinType
 ): Address {
-  if (!ethers.isAddress(ethAddr)) throw new Error('Invalid Ethereum address')
+  if (!isEthAddress(ethAddr)) throw new Error('Invalid Ethereum address')
+  if (isEthIdMaskAddress(ethAddr))
+    throw new Error('Cannot convert ID mask to delegated address')
 
   return newDelegatedAddress(
     DelegatedNamespace.EVM,
@@ -387,8 +389,6 @@ export function delegatedFromEthAddress(
   ethAddr: EthAddress,
   coinType: CoinType = defaultCoinType
 ): string {
-  if (isEthIdMaskAddress(ethAddr))
-    throw new Error('Cannot convert ID mask address to delegated')
   return newDelegatedEthAddress(ethAddr, coinType).toString()
 }
 
@@ -397,8 +397,20 @@ export function delegatedFromEthAddress(
  */
 
 export function ethAddressFromDelegated(delegated: string): EthAddress {
-  const ethAddress = `0x${decode(delegated).subAddrHex}`
-  return ethers.getAddress(ethAddress) as EthAddress // Adds checksum
+  const { namespace, subAddrHex } = decode(delegated)
+  if (namespace !== DelegatedNamespace.EVM)
+    throw new Error(
+      `Expected namespace ${DelegatedNamespace.EVM}, found ${namespace}`
+    )
+
+  // Add checksum
+  const ethAddress = ethers.getAddress(`0x${subAddrHex}`) as EthAddress
+
+  // Prevent returning an ID mask address
+  if (isEthIdMaskAddress(ethAddress))
+    throw new Error('Delegated address invalid, represented ID mask address')
+
+  return ethAddress
 }
 
 /**
@@ -406,7 +418,11 @@ export function ethAddressFromDelegated(delegated: string): EthAddress {
  */
 
 export function isEthAddress(address: string): address is EthAddress {
-  return ethers.isAddress(address) && Number(address) !== 0
+  return (
+    ethers.isHexString(address) &&
+    ethers.isAddress(address) &&
+    Number(address) !== 0
+  )
 }
 
 /**
@@ -414,6 +430,7 @@ export function isEthAddress(address: string): address is EthAddress {
  */
 
 export function isEthIdMaskAddress(ethAddr: EthAddress): boolean {
+  if (!isEthAddress(ethAddr)) return false
   const bytes = ethers.getBytes(ethAddr)
   const prefix = bytes.slice(0, ethIdMaskPrefixLength)
   return uint8arrays.equals(prefix, ethIdMaskPrefix)
