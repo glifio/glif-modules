@@ -221,7 +221,9 @@ export function newDelegatedEthAddress(
   ethAddr: EthAddress,
   coinType?: CoinType
 ): Address {
-  if (!ethers.isAddress(ethAddr)) throw new Error('Invalid Ethereum address')
+  if (!isEthAddress(ethAddr)) throw new Error('Invalid Ethereum address')
+  if (isEthIdMaskAddress(ethAddr))
+    throw new Error('Cannot convert ID mask to delegated address')
 
   return newDelegatedAddress(
     DelegatedNamespace.EVM,
@@ -387,8 +389,6 @@ export function delegatedFromEthAddress(
   ethAddr: EthAddress,
   coinType: CoinType = defaultCoinType
 ): string {
-  if (isEthIdMaskAddress(ethAddr))
-    throw new Error('Cannot convert ID mask address to delegated')
   return newDelegatedEthAddress(ethAddr, coinType).toString()
 }
 
