@@ -402,7 +402,15 @@ export function ethAddressFromDelegated(delegated: string): EthAddress {
     throw new Error(
       `Expected namespace ${DelegatedNamespace.EVM}, found ${namespace}`
     )
-  return ethers.getAddress(`0x${subAddrHex}`) as EthAddress // Adds checksum
+
+  // Add checksum
+  const ethAddress = ethers.getAddress(`0x${subAddrHex}`) as EthAddress
+
+  // Prevent returning an ID mask address
+  if (isEthIdMaskAddress(ethAddress))
+    throw new Error('Delegated address invalid, represented ID mask address')
+
+  return ethAddress
 }
 
 /**
