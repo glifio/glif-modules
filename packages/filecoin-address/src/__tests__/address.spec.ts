@@ -339,6 +339,8 @@ describe('address', () => {
     const ethId01 = '0xff00000000000000000000000000000000000001'
     const ethId0100 = '0xff00000000000000000000000000000000000064'
     const ethId05088 = '0xff000000000000000000000000000000000013e0'
+    const ethInvalid = '0x8Ba1f109551bD432803012645Ac136ddd64DBa72'
+    const ethIcap = 'XE65GB6LDNXYOFTX0NSV3FUWKOWIXAMJK36'
     const t01 = 't01'
     const t0100 = 't0100'
     const t05088 = 't05088'
@@ -373,6 +375,8 @@ describe('address', () => {
       expect(isEthAddress(ethId01)).toBe(true)
       expect(isEthAddress(ethId0100)).toBe(true)
       expect(isEthAddress(ethId05088)).toBe(true)
+      expect(isEthAddress(ethInvalid)).toBe(false)
+      expect(isEthAddress(ethIcap)).toBe(false)
       expect(isEthAddress(t01)).toBe(false)
       expect(isEthAddress(t1)).toBe(false)
       expect(isEthAddress(t2)).toBe(false)

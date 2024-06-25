@@ -410,7 +410,11 @@ export function ethAddressFromDelegated(delegated: string): EthAddress {
  */
 
 export function isEthAddress(address: string): address is EthAddress {
-  return ethers.isAddress(address) && Number(address) !== 0
+  return (
+    ethers.isHexString(address) &&
+    ethers.isAddress(address) &&
+    Number(address) !== 0
+  )
 }
 
 /**
