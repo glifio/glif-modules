@@ -349,7 +349,9 @@ describe('address', () => {
     const t3 =
       't3vvmn62lofvhjd2ugzca6sof2j2ubwok6cj4xxbfzz4yuxfkgobpihhd2thlanmsh3w2ptld2gqkn2jvlss4a'
     const t410f = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pt4zamxa'
-    const t410fInvalid = 't410f74aaaaaaaaaaaaaaaaaaaaaaaaaaaaabvo5mkdi'
+    const t410fIdMask = 't410f74aaaaaaaaaaaaaaaaaaaaaaaaaaaaabvo5mkdi'
+    const t410fShort = 't410fkkld55ioe7qg24wvt7fu6pbkndgcenb6'
+    const t410fLong = 't410fkkld55ioe7qg24wvt7fu6pbknb56ht7pebagbaf3x4ox2'
     const t411f = 't411fkkld55ioe7qg24wvt7fu6pbknb56ht7poxmy4mq'
 
     test('decode f4 addresses', () => {
@@ -368,7 +370,9 @@ describe('address', () => {
       expect(() => ethAddressFromDelegated(t2)).toThrow()
       expect(() => ethAddressFromDelegated(t3)).toThrow()
       expect(ethAddressFromDelegated(t410f)).toBe(eth)
-      expect(() => ethAddressFromDelegated(t410fInvalid)).toThrow()
+      expect(() => ethAddressFromDelegated(t410fIdMask)).toThrow()
+      expect(() => ethAddressFromDelegated(t410fShort)).toThrow()
+      expect(() => ethAddressFromDelegated(t410fLong)).toThrow()
       expect(() => ethAddressFromDelegated(t411f)).toThrow()
     })
 
