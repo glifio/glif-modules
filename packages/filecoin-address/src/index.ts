@@ -414,6 +414,7 @@ export function isEthAddress(address: string): address is EthAddress {
  */
 
 export function isEthIdMaskAddress(ethAddr: EthAddress): boolean {
+  if (!isEthAddress(ethAddr)) return false
   const bytes = ethers.getBytes(ethAddr)
   const prefix = bytes.slice(0, ethIdMaskPrefixLength)
   return uint8arrays.equals(prefix, ethIdMaskPrefix)
