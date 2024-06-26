@@ -319,7 +319,8 @@ export class FilecoinNumber extends BigNumber {
    * Returns a copy of this FilecoinNumber divided by the supplied value n
    */
   div(n: BigNumber.Value): FilecoinNumber {
-    return new FilecoinNumber(super.div(n), 'fil', this.coinType, this.unit)
+    const bigNr = super.div(n).dp(18, BigNumber.ROUND_DOWN)
+    return new FilecoinNumber(bigNr, 'fil', this.coinType, this.unit)
   }
 
   /**
@@ -333,7 +334,8 @@ export class FilecoinNumber extends BigNumber {
    * Returns a copy of this FilecoinNumber multiplied by the supplied value n
    */
   times(n: BigNumber.Value): FilecoinNumber {
-    return new FilecoinNumber(super.times(n), 'fil', this.coinType, this.unit)
+    const bigNr = super.times(n).dp(18, BigNumber.ROUND_DOWN)
+    return new FilecoinNumber(bigNr, 'fil', this.coinType, this.unit)
   }
 
   /**
