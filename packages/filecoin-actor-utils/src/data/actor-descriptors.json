@@ -1765,6 +1765,16 @@
             "Name": "CidString"
           }
         }
+      },
+      "ProviderSectors": {
+        "Type": "object",
+        "Name": "Cid",
+        "Children": {
+          "/": {
+            "Type": "string",
+            "Name": "CidString"
+          }
+        }
       }
     },
     "Methods": {
