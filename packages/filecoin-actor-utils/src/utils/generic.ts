@@ -100,11 +100,12 @@ export const describeAddress = (
  */
 export const describeBytes = (
   dataType: DataType,
-  value: string | Uint8Array
+  value: string | Uint8Array | null
 ) => {
   // Convert bytes to base64 string
   const isBytes = value instanceof Uint8Array
-  const base64 = isBytes ? BytesToString(value, 'base64') : value
+  const isNull = value === null
+  const base64 = isBytes ? BytesToString(value, 'base64') : isNull ? '' : value
 
   // Check the value type and add to the descriptor
   checkValueType(dataType, base64, 'string')
