@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash.clonedeep'
 import { Interface } from 'ethers'
-import { actorDescriptorMap } from '../data'
+import { actorDescriptorMap, emptyValue } from '../data'
 import { ActorName, DataType, MethodNum } from '../types'
 import { ABI, cborToHex, abiParamsToDataType } from './abi'
 import { describeDataType } from './generic'
@@ -33,10 +33,7 @@ export const describeMessageParams = (
   actorName: ActorName,
   methodNum: MethodNum,
   msgParams: any
-): DataType | null => {
-  // Return null for falsy message params
-  if (!msgParams) return null
-
+): DataType => {
   // Retrieve the message params descriptor
   const descriptor = getMessageParamsDescriptor(actorName, methodNum)
 
@@ -54,15 +51,9 @@ export const describeMessageParams = (
  * @param abi the ABI of the contract that performed this transaction
  * @returns the described message params
  */
-export const describeFEVMTxParams = (
-  params: string,
-  abi: ABI
-): DataType | null => {
+export const describeFEVMTxParams = (params: string, abi: ABI): DataType => {
   // Throw error for missing ABI
   if (!abi) throw new Error('Missing ABI')
-
-  // Return null for falsy tx params
-  if (!params) return null
 
   // Parse transaction from params
   const iface = new Interface(abi)
@@ -72,7 +63,7 @@ export const describeFEVMTxParams = (
 
   // Return null for empty ABI inputs
   const { inputs } = tx.fragment
-  if (!inputs.length) return null
+  if (!inputs.length) return emptyValue
 
   // Convert ABI inputs to descriptor
   const dataType = abiParamsToDataType('Inputs', inputs)

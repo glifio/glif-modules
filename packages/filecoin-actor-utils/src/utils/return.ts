@@ -1,6 +1,6 @@
 import { Interface } from 'ethers'
 import cloneDeep from 'lodash.clonedeep'
-import { actorDescriptorMap } from '../data'
+import { actorDescriptorMap, emptyValue } from '../data'
 import { ActorName, DataType, MethodNum } from '../types'
 import { ABI, cborToHex, abiParamsToDataType, abiParamToDataType } from './abi'
 import { describeDataType } from './generic'
@@ -33,10 +33,7 @@ export const describeMessageReturn = (
   actorName: ActorName,
   methodNum: MethodNum,
   msgReturn: any
-): DataType | null => {
-  // Return null for falsy return value
-  if (!msgReturn) return null
-
+): DataType => {
   // Retrieve the message return descriptor
   const descriptor = getMessageReturnDescriptor(actorName, methodNum)
 
@@ -59,12 +56,9 @@ export const describeFEVMTxReturn = (
   params: string,
   returnVal: string,
   abi: ABI
-): DataType | null => {
+): DataType => {
   // Throw error for missing ABI
   if (!abi) throw new Error('Missing ABI')
-
-  // Return null for falsy tx params or return
-  if (!params || !returnVal) return null
 
   // Parse transaction from params
   const iface = new Interface(abi)
@@ -74,7 +68,7 @@ export const describeFEVMTxReturn = (
 
   // Return null for empty ABI outputs
   const { outputs } = tx.fragment
-  if (!outputs?.length) return null
+  if (!outputs?.length) return emptyValue
 
   // Decode return value
   const returnHex = cborToHex(returnVal)

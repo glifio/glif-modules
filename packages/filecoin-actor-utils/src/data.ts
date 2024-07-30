@@ -1,5 +1,5 @@
 import actorDescriptorMapJSON from './data/actor-descriptors.json'
-import { ActorDescriptorMap } from './types'
+import { ActorDescriptorMap, Type } from './types'
 
 /**
  * Returns the actor descriptors with MethodNum converted to number from string.
@@ -21,3 +21,9 @@ export const actorDescriptorMap = Object.fromEntries(
     }
   ])
 ) as ActorDescriptorMap
+
+export const emptyValue = {
+  Type: Type.Object,
+  Name: 'EmptyValue',
+  Children: {}
+}
