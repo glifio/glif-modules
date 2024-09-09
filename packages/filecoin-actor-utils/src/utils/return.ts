@@ -66,13 +66,13 @@ export const describeFEVMTxReturn = (
   const tx = iface.parseTransaction({ data })
   if (!tx) throw new Error('Failed to parse transaction')
 
-  // Return null for empty ABI outputs
+  // Return empty object if no output
   const { outputs } = tx.fragment
   if (!outputs?.length) return emptyValue
 
   // Decode return value
   const returnHex = cborToHex(returnVal)
-  const result = iface.decodeFunctionResult(tx.name, returnHex)
+  const result = iface.decodeFunctionResult(tx.fragment, returnHex)
 
   // Convert ABI outputs to descriptor
   const dataType =
