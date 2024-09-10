@@ -267,7 +267,10 @@ export class FilecoinNumber extends BigNumber {
       const isLt1K = unitVal.isGreaterThan(-1000) && unitVal.isLessThan(1000)
       if (isLt1K || unit === 'T') {
         const suffix = `${unit}${format.suffix}`
-        return unitVal.toFormat({ ...format, suffix })
+        const unitFmt = { ...format, suffix }
+        return padZeros
+          ? unitVal.toFormat(1, roundingMode, unitFmt)
+          : unitVal.toFormat(unitFmt)
       }
     }
 
