@@ -218,7 +218,7 @@ export class FilecoinNumber extends BigNumber {
 
     const toFormat = (value: BigNumber, format: BigNumber.Format): string =>
       padZeros
-        ? value.toFormat(decimals, BigNumber.ROUND_DOWN, format)
+        ? value.toFormat(roundValue ? decimals : 18, roundingMode, format)
         : value.toFormat(format)
 
     // Create format configuration
