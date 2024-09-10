@@ -263,7 +263,7 @@ export class FilecoinNumber extends BigNumber {
     const units = ['K', 'M', 'B', 'T']
     for (const unit of units) {
       const unitRaw = rounded.dividedBy(Math.pow(1000, ++power))
-      const unitVal = unitRaw.dp(1, BigNumber.ROUND_DOWN)
+      const unitVal = unitRaw.dp(1, roundingMode)
       const isLt1K = unitVal.isGreaterThan(-1000) && unitVal.isLessThan(1000)
       if (isLt1K || unit === 'T') {
         const suffix = `${unit}${format.suffix}`
