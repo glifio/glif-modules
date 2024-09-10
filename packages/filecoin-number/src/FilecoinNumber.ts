@@ -208,6 +208,7 @@ export class FilecoinNumber extends BigNumber {
    * Expresses this FilecoinNumber as a balance string
    */
   formatBalance(options?: FilecoinFormatOptions): string {
+    // Round down by default to avoid showing a higher balance
     const roundingMode = options?.roundingMode ?? BigNumber.ROUND_DOWN
     const roundValue = options?.decimals !== null
     const decimals = options?.decimals ?? 2
