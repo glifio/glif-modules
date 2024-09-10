@@ -12,15 +12,17 @@ export enum CoinType {
 }
 
 /**
- * @param options.truncate Whether to truncate the address with K, M, B and T units, defaults to `true`. Disabled when `options.decimals` is `null`
+ * @param options.roundingMode The rounding mode to use, defaults to `BigNumber.ROUND_DOWN`
  * @param options.decimals How many decimals to display, `null` disables rounding, defaults to `3`
+ * @param options.truncate Whether to truncate the address with K, M, B and T units, defaults to `true`. Disabled when `options.decimals` is `null`
  * @param options.padZeros Whether add trailing zeros to the end of the string, defaults to `false`
  * @param options.addUnit Whether to display the unit, defaults to `true`
  * @param options.prefix The prefix to prepend to the formatted string
  */
 export interface FilecoinFormatOptions {
-  truncate?: boolean
+  roundingMode?: BigNumber.RoundingMode
   decimals?: number | null
+  truncate?: boolean
   padZeros?: boolean
   addUnit?: boolean
   prefix?: string
@@ -206,15 +208,17 @@ export class FilecoinNumber extends BigNumber {
    * Expresses this FilecoinNumber as a balance string
    */
   formatBalance(options?: FilecoinFormatOptions): string {
+    // Round down by default to avoid showing a higher balance
+    const roundingMode = options?.roundingMode ?? BigNumber.ROUND_DOWN
+    const roundValue = options?.decimals !== null
+    const decimals = options?.decimals ?? 2
     const truncate = options?.truncate ?? true
-    const round = options?.decimals !== null
-    const decimals = options?.decimals ?? 3
     const padZeros = options?.padZeros ?? false
     const addUnit = options?.addUnit ?? true
 
     const toFormat = (value: BigNumber, format: BigNumber.Format): string =>
       padZeros
-        ? value.toFormat(decimals, BigNumber.ROUND_DOWN, format)
+        ? value.toFormat(roundValue ? decimals : 18, roundingMode, format)
         : value.toFormat(format)
 
     // Create format configuration
@@ -228,10 +232,10 @@ export class FilecoinNumber extends BigNumber {
 
     // When not rounding, it doesn't make sense to truncate either.
     // Return the original value when it's zero or when not rounding.
-    if (this.isZero() || !round) return toFormat(this, format)
+    if (this.isZero() || !roundValue) return toFormat(this, format)
 
-    // Round down by default to avoid showing higher balance
-    const rounded = this.dp(decimals, BigNumber.ROUND_DOWN)
+    // Round value to the specified decimals
+    const rounded = this.dp(decimals, roundingMode)
 
     // Value is zero after rounding
     if (rounded.isZero()) {
@@ -259,11 +263,14 @@ export class FilecoinNumber extends BigNumber {
     const units = ['K', 'M', 'B', 'T']
     for (const unit of units) {
       const unitRaw = rounded.dividedBy(Math.pow(1000, ++power))
-      const unitVal = unitRaw.dp(1, BigNumber.ROUND_DOWN)
+      const unitVal = unitRaw.dp(1, roundingMode)
       const isLt1K = unitVal.isGreaterThan(-1000) && unitVal.isLessThan(1000)
       if (isLt1K || unit === 'T') {
         const suffix = `${unit}${format.suffix}`
-        return unitVal.toFormat({ ...format, suffix })
+        const unitFmt = { ...format, suffix }
+        return padZeros
+          ? unitVal.toFormat(1, roundingMode, unitFmt)
+          : unitVal.toFormat(unitFmt)
       }
     }
 
