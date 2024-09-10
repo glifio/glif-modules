@@ -211,7 +211,7 @@ export class FilecoinNumber extends BigNumber {
     const rounding = options?.rounding ?? BigNumber.ROUND_DOWN
     const truncate = options?.truncate ?? true
     const round = options?.decimals !== null
-    const decimals = options?.decimals ?? 3
+    const decimals = options?.decimals ?? 2
     const padZeros = options?.padZeros ?? false
     const addUnit = options?.addUnit ?? true
 
