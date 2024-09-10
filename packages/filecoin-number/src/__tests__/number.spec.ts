@@ -213,13 +213,13 @@ describe('FilecoinNumber', () => {
 
       // Less then 1000
       expect(new FilecoinNumber('1.23456789', 'fil').formatBalance()).toEqual(
-        '1.234 FIL'
+        '1.23 FIL'
       )
       expect(new FilecoinNumber('12.3456789', 'fil').formatBalance()).toEqual(
-        '12.345 FIL'
+        '12.34 FIL'
       )
       expect(new FilecoinNumber('123.456789', 'fil').formatBalance()).toEqual(
-        '123.456 FIL'
+        '123.45 FIL'
       )
 
       // Thousands
