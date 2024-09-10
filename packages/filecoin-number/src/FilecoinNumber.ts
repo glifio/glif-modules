@@ -234,7 +234,7 @@ export class FilecoinNumber extends BigNumber {
     // Return the original value when it's zero or when not rounding.
     if (this.isZero() || !roundValue) return toFormat(this, format)
 
-    // Round down by default to avoid showing higher balance
+    // Round value to the specified decimals
     const rounded = this.dp(decimals, BigNumber.ROUND_DOWN)
 
     // Value is zero after rounding
