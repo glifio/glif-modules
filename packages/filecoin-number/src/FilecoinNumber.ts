@@ -12,17 +12,17 @@ export enum CoinType {
 }
 
 /**
- * @param options.rounding The rounding mode to use, defaults to `BigNumber.ROUND_DOWN`
- * @param options.truncate Whether to truncate the address with K, M, B and T units, defaults to `true`. Disabled when `options.decimals` is `null`
+ * @param options.roundingMode The rounding mode to use, defaults to `BigNumber.ROUND_DOWN`
  * @param options.decimals How many decimals to display, `null` disables rounding, defaults to `3`
+ * @param options.truncate Whether to truncate the address with K, M, B and T units, defaults to `true`. Disabled when `options.decimals` is `null`
  * @param options.padZeros Whether add trailing zeros to the end of the string, defaults to `false`
  * @param options.addUnit Whether to display the unit, defaults to `true`
  * @param options.prefix The prefix to prepend to the formatted string
  */
 export interface FilecoinFormatOptions {
-  rounding?: BigNumber.RoundingMode
-  truncate?: boolean
+  roundingMode?: BigNumber.RoundingMode
   decimals?: number | null
+  truncate?: boolean
   padZeros?: boolean
   addUnit?: boolean
   prefix?: string
