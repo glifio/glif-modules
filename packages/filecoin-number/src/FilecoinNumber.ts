@@ -12,6 +12,7 @@ export enum CoinType {
 }
 
 /**
+ * @param options.rounding The rounding mode to use, defaults to `BigNumber.ROUND_DOWN`
  * @param options.truncate Whether to truncate the address with K, M, B and T units, defaults to `true`. Disabled when `options.decimals` is `null`
  * @param options.decimals How many decimals to display, `null` disables rounding, defaults to `3`
  * @param options.padZeros Whether add trailing zeros to the end of the string, defaults to `false`
@@ -19,6 +20,7 @@ export enum CoinType {
  * @param options.prefix The prefix to prepend to the formatted string
  */
 export interface FilecoinFormatOptions {
+  rounding?: BigNumber.RoundingMode
   truncate?: boolean
   decimals?: number | null
   padZeros?: boolean
@@ -206,6 +208,7 @@ export class FilecoinNumber extends BigNumber {
    * Expresses this FilecoinNumber as a balance string
    */
   formatBalance(options?: FilecoinFormatOptions): string {
+    const rounding = options?.rounding ?? BigNumber.ROUND_DOWN
     const truncate = options?.truncate ?? true
     const round = options?.decimals !== null
     const decimals = options?.decimals ?? 3
