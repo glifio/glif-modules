@@ -208,10 +208,10 @@ export class FilecoinNumber extends BigNumber {
    * Expresses this FilecoinNumber as a balance string
    */
   formatBalance(options?: FilecoinFormatOptions): string {
-    const rounding = options?.rounding ?? BigNumber.ROUND_DOWN
-    const truncate = options?.truncate ?? true
-    const round = options?.decimals !== null
+    const roundingMode = options?.roundingMode ?? BigNumber.ROUND_DOWN
+    const roundValue = options?.decimals !== null
     const decimals = options?.decimals ?? 2
+    const truncate = options?.truncate ?? true
     const padZeros = options?.padZeros ?? false
     const addUnit = options?.addUnit ?? true
 
@@ -231,7 +231,7 @@ export class FilecoinNumber extends BigNumber {
 
     // When not rounding, it doesn't make sense to truncate either.
     // Return the original value when it's zero or when not rounding.
-    if (this.isZero() || !round) return toFormat(this, format)
+    if (this.isZero() || !roundValue) return toFormat(this, format)
 
     // Round down by default to avoid showing higher balance
     const rounded = this.dp(decimals, BigNumber.ROUND_DOWN)
